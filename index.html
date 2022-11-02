@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="/vite.svg" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Vite + Vue + TS</title>
+  </head>
+  <body>
+    <div id="app"></div>
+    <div id="pointer"></div>
+    <div id="pointer-effect"></div>
+    <script type="module" src="/src/main.ts"></script>
+  </body>
+  <style>
+    * {
+      cursor: url(src/assets/mouse.png) 4 4, default;
+    }
+    #pointer {
+      transform: translate3d(-50%, -50%, 0px);
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 36px;
+      height: 36px;
+      border: 1px solid #cccccc;
+      border-radius: 50%;
+      transition-property: opacity , background-color, left, top, width, height; 
+      transition-duration: .3s , .3s, .1s, .1s, .3s, .3s;
+      z-index: 2;
+      pointer-events: none;
+    }
+    #pointer.hidden {
+      opacity: 0;
+    }
+    #pointer.hover {
+      width: 24px;
+      height: 24px;
+      background-color: rgba(255, 255, 255, 0.5);
+    }
+
+    #pointer-effect {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 80px;
+      height: 80px;
+      border: 4px solid #ccc;
+      border-radius: 50%;
+      transform: translate3d(-50%, -50%, 0px) scale(1);
+      opacity: 0;
+      z-index: 1;
+      pointer-events: none;
+    }
+    @keyframes effect {
+      0% {
+        transform: translate3d(-50%, -50%, 0px) scale(0.1);
+        opacity: 1;
+      }
+      30% {
+        opacity: 0.6;
+      }
+      100% {
+        transform: translate3d(-50%, -50%, 0px) scale(1);
+        opacity: 0;
+      }
+    }
+  </style>
+  <script type="module">
+
+    const body = document.querySelector('body')
+    const element = document.getElementById('pointer')
+    const elementEffect = document.getElementById('pointer-effect')
+
+    function setPosition(x, y) {
+      element.style.top = y - 1 + 'px'
+      element.style.left = x - 1 + 'px'
+    }
+
+    body.onmousemove = e => window.requestAnimationFrame(() => setPosition(e.clientX, e.clientY))
+
+    body.onmouseenter = e => element.classList.remove('hidden')
+    body.onmouseleave = e => element.classList.add('hidden')
+
+    body.onmouseover = e => e.target.dataset.cursor || e?.fromElement?.dataset.cursor ? element.classList.add('hover') : element.classList.remove('hover')
+  </script>
+</html>
